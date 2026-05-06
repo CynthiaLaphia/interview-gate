@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interview Gate | A Laphia Tool</title>
+  <meta name="description" content="A 3-minute diagnostic to pinpoint exactly what is costing you interviews in the UK job market." />
+
+  <!-- Open Graph / Social sharing previews -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.laphia.co.uk/interview-gate" />
+  <meta property="og:title" content="Interview Gate — Find out what's really stopping you from getting interviews in the UK" />
+  <meta property="og:description" content="A free 3-minute diagnostic to pinpoint exactly what is costing you interviews in the UK job market. Personalised. Honest. Actionable." />
+  <meta property="og:image" content="https://www.laphia.co.uk/interview-gate-preview.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Interview Gate — Find out what's really stopping you from getting interviews in the UK" />
+  <meta name="twitter:description" content="A free 3-minute diagnostic to pinpoint exactly what is costing you interviews in the UK job market." />
+  <meta name="twitter:image" content="https://www.laphia.co.uk/interview-gate-preview.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #1B2A4A;
+      --navy-light: #243660;
+      --tan: #C9A96E;
+      --tan-light: #D4B483;
+      --beige: #F5F0E8;
+      --beige-dark: #EDE8DF;
+      --white: #FFFFFF;
+      --text-dark: #1B2A4A;
+      --text-muted: #6B6560;
+      --green: #2D7A4F;
+      --amber: #C17D2A;
+      --red: #B03A2E;
+      --green-bg: #EAF4EE;
+      --amber-bg: #FBF1E4;
+      --red-bg: #F9ECEA;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 4px 24px rgba(27,42,74,0.10);
+      --shadow-lg: 0 8px 40px rgba(27,42,74,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--beige);
+      color: var(--text-dark);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
+
+    /* ── SCREENS ── */
+    .screen { display: none; min-height: 100vh; }
+    .screen.active { display: flex; flex-direction: column; }
+
+    /* ── LANDING ── */
+    #screen-landing { background: var(--navy); }
+
+    .landing-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-name {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .brand-name .gold { color: var(--tan); }
+
+    .brand-sub {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--tan);
+      text-transform: uppercase;
+      margin-top: 1px;
+    }
+
+    .nav-right {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.05em;
+    }
+
+    .landing-hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px 40px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(201,169,110,0.15);
+      border: 1px solid rgba(201,169,110,0.3);
+      color: var(--tan);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+    }
+
+    .hero-title {
+      font-size: clamp(36px, 6vw, 64px);
+      color: var(--white);
+      max-width: 760px;
+      margin-bottom: 8px;
+    }
+
+    .hero-title span { color: var(--tan); }
+
+    .hero-subtitle {
+      font-size: 18px;
+      color: rgba(255,255,255,0.65);
+      max-width: 520px;
+      margin: 12px auto 28px;
+      line-height: 1.7;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--tan);
+      color: var(--navy);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 16px 36px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-primary:hover { background: var(--tan-light); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,169,110,0.3); }
+
+    .btn-arrow { font-size: 18px; transition: transform 0.2s; }
+    .btn-primary:hover .btn-arrow { transform: translateX(4px); }
+
+    .trust-signals {
+      display: flex;
+      gap: 32px;
+      margin-top: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+    }
+
+    .trust-icon { color: var(--tan); font-size: 16px; }
+
+    .landing-sections { background: var(--beige); }
+
+    .section { padding: 72px 24px; max-width: 1000px; margin: 0 auto; }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--tan);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .section-title {
+      font-size: clamp(26px, 4vw, 38px);
+      color: var(--navy);
+      margin-bottom: 48px;
+    }
+
+    .four-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .area-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .area-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--navy);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 20px;
+    }
+
+    .area-card h3 { font-size: 17px; color: var(--navy); margin-bottom: 8px; font-family: 'DM Sans', sans-serif; font-weight: 600; }
+    .area-card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+    .how-section { background: var(--white); padding: 72px 24px; }
+    .how-inner { max-width: 800px; margin: 0 auto; text-align: center; }
+
+    .steps { display: flex; gap: 0; margin-top: 48px; position: relative; }
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: calc(16.66% + 20px);
+      right: calc(16.66% + 20px);
+      height: 1px;
+      background: var(--beige-dark);
+    }
+
+    .step { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 16px; }
+
+    .step-num {
+      width: 56px;
+      height: 56px;
+      background: var(--tan);
+      color: var(--navy);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step h3 { font-size: 16px; font-weight: 600; font-family: 'DM Sans', sans-serif; color: var(--navy); margin-bottom: 8px; }
+    .step p { font-size: 14px; color: var(--text-muted); }
+
+    .landing-footer {
+      background: var(--navy);
+      padding: 24px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-text { font-size: 13px; color: rgba(255,255,255,0.4); }
+    .footer-text span { color: var(--tan); }
+
+    /* ── QUESTIONS ── */
+    #screen-questions {
+      background: var(--beige);
+      flex-direction: column;
+    }
+
+    .q-header {
+      background: var(--white);
+      border-bottom: 1px solid var(--beige-dark);
+      padding: 16px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .q-header-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .q-brand { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--navy); }
+    .q-counter { font-size: 13px; color: var(--text-muted); }
+
+    .progress-bar {
+      max-width: 640px;
+      margin: 0 auto;
+      height: 4px;
+      background: var(--beige-dark);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--tan);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .q-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+    }
+
+    .q-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: var(--shadow);
+    }
+
+    .q-step-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--tan);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .q-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(20px, 3vw, 26px);
+      color: var(--navy);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .q-hint {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 10px; }
+
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border: 1.5px solid var(--beige-dark);
+      border-radius: var(--radius-sm);
+      background: var(--white);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: left;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text-dark);
+      width: 100%;
+    }
+
+    .option-btn:hover { border-color: var(--tan); background: var(--beige); }
+    .option-btn.selected { border-color: var(--tan); background: rgba(201,169,110,0.08); font-weight: 500; }
+
+    .option-letter {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid var(--beige-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+
+    .option-btn.selected .option-letter {
+      background: var(--tan);
+      border-color: var(--tan);
+      color: var(--navy);
+    }
+
+    .confidence-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .conf-btn {
+      padding: 14px 8px;
+      border: 1.5px solid var(--beige-dark);
+      border-radius: var(--radius-sm);
+      background: var(--white);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .conf-btn:hover { border-color: var(--tan); }
+    .conf-btn.selected { border-color: var(--tan); background: rgba(201,169,110,0.08); color: var(--navy); }
+
+    .conf-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .optional-textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid var(--beige-dark);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text-dark);
+      background: var(--white);
+      resize: vertical;
+      min-height: 100px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .optional-textarea:focus { border-color: var(--tan); }
+    .optional-textarea::placeholder { color: var(--text-muted); }
+
+    .q-footer {
+      background: var(--white);
+      border-top: 1px solid var(--beige-dark);
+      padding: 16px 24px;
+      position: sticky;
+      bottom: 0;
+    }
+
+    .q-footer-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      cursor: pointer;
+      padding: 10px 0;
+    }
+
+    .btn-back:hover { color: var(--navy); }
+
+    .btn-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 12px 28px;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-next:hover { background: var(--navy-light); }
+    .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-skip {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 10px 0;
+    }
+
+    /* ── LOADING ── */
+    #screen-loading {
+      background: var(--beige);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .spinner {
+      width: 56px;
+      height: 56px;
+      border: 3px solid var(--beige-dark);
+      border-top-color: var(--tan);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-msg {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: var(--navy);
+      text-align: center;
+      max-width: 320px;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.4s;
+    }
+
+    .loading-sub { font-size: 14px; color: var(--text-muted); }
+
+    /* ── RESULTS ── */
+    #screen-results {
+      background: var(--beige);
+      flex-direction: column;
+    }
+
+    .results-hero {
+      background: var(--navy);
+      padding: 48px 24px 56px;
+      text-align: center;
+    }
+
+    .results-label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--tan);
+      margin-bottom: 16px;
+    }
+
+    .score-display {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(72px, 15vw, 100px);
+      color: var(--tan);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .score-denom {
+      font-size: 16px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 0;
+    }
+
+    .scorecard {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px;
+      max-width: 560px;
+      margin: -32px auto 0;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      z-index: 2;
+    }
+
+    .area-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--beige);
+    }
+
+    .area-row:last-child { border-bottom: none; }
+
+    .area-name { font-size: 14px; font-weight: 500; color: var(--navy); flex: 1; }
+
+    .area-score-num { font-size: 14px; font-weight: 600; color: var(--navy); white-space: nowrap; }
+
+    .status-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .status-strong { background: var(--green-bg); color: var(--green); }
+    .status-attention { background: var(--amber-bg); color: var(--amber); }
+    .status-gap { background: var(--red-bg); color: var(--red); }
+
+    .bar-track {
+      width: 80px;
+      height: 4px;
+      background: var(--beige-dark);
+      border-radius: 2px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 1s ease;
+    }
+
+    .bar-strong { background: var(--green); }
+    .bar-attention { background: var(--amber); }
+    .bar-gap { background: var(--red); }
+
+    /* Teasers */
+    .teasers {
+      max-width: 600px;
+      margin: 32px auto 0;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .teaser-card {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      box-shadow: 0 2px 8px rgba(27,42,74,0.06);
+    }
+
+    .teaser-area {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--tan);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .teaser-text { font-size: 14px; color: var(--text-dark); line-height: 1.5; }
+
+    /* Lock gate */
+    .lock-gate {
+      max-width: 600px;
+      margin: 24px auto;
+      padding: 0 24px;
+    }
+
+    .lock-box {
+      border: 2px dashed var(--tan);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      text-align: center;
+      background: rgba(201,169,110,0.04);
+    }
+
+    .lock-icon { font-size: 32px; margin-bottom: 12px; }
+
+    .lock-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .lock-sub { font-size: 14px; color: var(--text-muted); }
+
+    /* Email form */
+    .email-form-section {
+      background: var(--navy);
+      padding: 40px 24px;
+    }
+
+    .email-form-inner {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .form-field {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius-sm);
+      padding: 0 16px;
+      margin-bottom: 12px;
+      transition: border-color 0.15s;
+    }
+
+    .form-field:focus-within { border-color: var(--tan); }
+
+    .form-icon { color: rgba(255,255,255,0.4); font-size: 16px; flex-shrink: 0; }
+
+    .form-field input,
+    .form-field select {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      padding: 14px 0;
+    }
+
+    .form-field input::placeholder { color: rgba(255,255,255,0.35); }
+
+    .form-field select { color: rgba(255,255,255,0.7); cursor: pointer; }
+    .form-field select option { background: var(--navy); color: var(--white); }
+
+    .btn-unlock {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--tan);
+      color: var(--navy);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 16px;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 4px;
+    }
+
+    .btn-unlock:hover { background: var(--tan-light); transform: translateY(-1px); }
+    .btn-unlock:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* Full results */
+    .full-results {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      display: none;
+    }
+
+    .full-results.revealed { display: block; }
+
+    .results-section { margin-bottom: 32px; }
+
+    .results-section-title {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--tan);
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .breakdown-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(27,42,74,0.06);
+    }
+
+    .breakdown-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .breakdown-area {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--navy);
+    }
+
+    .breakdown-text {
+      font-size: 15px;
+      color: var(--text-dark);
+      line-height: 1.7;
+    }
+
+    .diagnosis-card {
+      background: var(--navy);
+      color: var(--white);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 16px;
+    }
+
+    .diagnosis-card p { font-size: 15px; line-height: 1.8; opacity: 0.9; }
+
+    .action-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(27,42,74,0.06);
+      display: flex;
+      gap: 16px;
+    }
+
+    .action-num {
+      width: 32px;
+      height: 32px;
+      background: var(--tan);
+      color: var(--navy);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .action-content { flex: 1; }
+    .action-title { font-weight: 600; color: var(--navy); font-size: 15px; margin-bottom: 6px; }
+    .action-text { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+    /* CTA */
+    .laphia-cta {
+      background: var(--navy);
+      padding: 56px 24px;
+      text-align: center;
+    }
+
+    .laphia-cta-inner { max-width: 580px; margin: 0 auto; }
+
+    .cta-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 4vw, 36px);
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+
+    .cta-heading span { color: var(--tan); }
+
+    .cta-text {
+      font-size: 15px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .cta-settled {
+      font-size: 14px;
+      color: var(--tan);
+      margin-top: 24px;
+      font-style: italic;
+    }
+
+    /* Feedback */
+    .feedback-section {
+      background: var(--beige);
+      padding: 56px 24px;
+      text-align: center;
+    }
+
+    .feedback-inner { max-width: 480px; margin: 0 auto; }
+
+    .feedback-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .feedback-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.6; }
+
+    .stars {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .star {
+      font-size: 32px;
+      cursor: pointer;
+      color: var(--beige-dark);
+      transition: color 0.15s, transform 0.1s;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .star:hover, .star.active { color: var(--tan); }
+    .star:hover { transform: scale(1.1); }
+
+    .feedback-textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid var(--beige-dark);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text-dark);
+      background: var(--white);
+      resize: vertical;
+      min-height: 90px;
+      outline: none;
+      margin-bottom: 16px;
+      transition: border-color 0.15s;
+    }
+
+    .feedback-textarea:focus { border-color: var(--tan); }
+    .feedback-textarea::placeholder { color: var(--text-muted); }
+
+    .btn-feedback {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 13px 32px;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-feedback:hover { background: var(--navy-light); }
+
+    .thank-you {
+      display: none;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .thank-you.show { display: block; }
+
+    .thank-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin: 0 auto 16px;
+    }
+
+    .thank-you h3 { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--navy); margin-bottom: 8px; }
+    .thank-you p { font-size: 14px; color: var(--text-muted); }
+
+    .results-footer {
+      background: var(--navy);
+      padding: 20px 24px;
+      text-align: center;
+    }
+
+    .retry-link {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .retry-link:hover { color: rgba(255,255,255,0.7); }
+
+    /* Utility */
+    .error-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 24px;
+      text-align: center;
+      background: var(--beige);
+    }
+
+    .error-screen.show { display: flex; }
+    .error-title { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--navy); margin-bottom: 12px; }
+    .error-text { font-size: 15px; color: var(--text-muted); margin-bottom: 28px; max-width: 400px; }
+
+    @media (max-width: 600px) {
+      .landing-nav { padding: 16px 20px; }
+      .landing-footer { padding: 20px; flex-direction: column; text-align: center; }
+      .steps { flex-direction: column; gap: 32px; }
+      .steps::before { display: none; }
+      .q-card { padding: 28px 20px; }
+      .scorecard { margin: -24px 16px 0; }
+      .trust-signals { gap: 16px; }
+      .action-card { flex-direction: column; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN: LANDING                            -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="screen-landing" class="screen active">
+  <nav class="landing-nav">
+    <div class="brand">
+      <span class="brand-name">LAPH<span class="gold">IA</span></span>
+      <span class="brand-sub">Interview Gate</span>
+    </div>
+    <span class="nav-right">A diagnostic by Laphia</span>
+  </nav>
+
+  <div class="landing-hero">
+    <div class="badge">Free 3-Minute Diagnostic</div>
+    <h1 class="hero-title">
+      Interview<br><span>Gate</span>
+    </h1>
+    <p style="font-size:16px;color:rgba(255,255,255,0.55);letter-spacing:0.02em;margin-bottom:4px;">
+      Find out what's really stopping you from getting interviews in the UK
+    </p>
+    <p class="hero-subtitle">
+      A 3-minute diagnostic to pinpoint exactly what is costing you interviews in the UK job market.
+    </p>
+    <button class="btn-primary" onclick="startDiagnostic()">
+      Start the diagnostic <span class="btn-arrow">→</span>
+    </button>
+    <div class="trust-signals">
+      <div class="trust-item"><span class="trust-icon">○</span> Takes about 3 minutes</div>
+      <div class="trust-item"><span class="trust-icon">✓</span> Personalised, honest results</div>
+      <div class="trust-item"><span class="trust-icon">⊘</span> No personal details required</div>
+    </div>
+  </div>
+
+  <div class="landing-sections">
+    <div class="section">
+      <div class="section-label">What it covers</div>
+      <h2 class="section-title">Four areas that determine your interview rate</h2>
+      <div class="four-grid">
+        <div class="area-card">
+          <div class="area-icon" style="font-size:22px;color:var(--tan);">&#9889;</div>
+          <h3>Execution</h3>
+          <p>Are you applying consistently enough for the market to respond? Volume and rhythm matter more than most people think.</p>
+        </div>
+        <div class="area-card">
+          <div class="area-icon" style="font-size:22px;color:var(--tan);">&#9776;</div>
+          <h3>CV and Targeting</h3>
+          <p>Is your CV tailored to each role, or are you sending the same version everywhere? Generic CVs get generic results.</p>
+        </div>
+        <div class="area-card">
+          <div class="area-icon" style="font-size:22px;color:var(--tan);">&#9678;</div>
+          <h3>Strategy and Focus</h3>
+          <p>Are you applying to the right roles, in the right places, with the right approach? Focus beats volume every time.</p>
+        </div>
+        <div class="area-card">
+          <div class="area-icon" style="font-size:22px;color:var(--tan);">&#9650;</div>
+          <h3>Confidence and Clarity</h3>
+          <p>Can you clearly articulate your value and impact? If you undersell your experience, your applications will too.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="how-section">
+    <div class="how-inner">
+      <div class="section-label">How it works</div>
+      <h2 class="section-title" style="font-size:clamp(24px,4vw,36px);color:var(--navy);">Three minutes to clarity</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Answer honestly</h3>
+          <p>10 quick questions about your current job search approach. No right or wrong answers.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Get your score</h3>
+          <p>Receive a personalised Application Readiness Score out of 100, broken down across all four areas.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Take action</h3>
+          <p>Walk away with a clear diagnosis and specific actions you can start this week.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--navy);padding:56px 24px;text-align:center;">
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(24px,4vw,36px);color:var(--white);max-width:600px;margin:0 auto 16px;">
+      Ready to find out what is holding you back?
+    </h2>
+    <p style="font-size:15px;color:rgba(255,255,255,0.55);max-width:500px;margin:0 auto 32px;">
+      The UK job market has specific expectations. This diagnostic helps you understand where you stand and what to change.
+    </p>
+    <button class="btn-primary" onclick="startDiagnostic()">
+      Start the diagnostic <span class="btn-arrow">→</span>
+    </button>
+  </div>
+
+  <footer class="landing-footer">
+    <span class="footer-text">© Laphia. <span>Lafiya</span> — peace, security, being settled.</span>
+    <span class="footer-text">Built for professionals navigating the UK job market.</span>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN: QUESTIONS                          -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="screen-questions" class="screen">
+  <div class="q-header">
+    <div class="q-header-inner">
+      <span class="q-brand">Interview Gate</span>
+      <span class="q-counter" id="q-counter">1 of 10</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:10%"></div>
+    </div>
+  </div>
+
+  <div class="q-body">
+    <div class="q-card" id="q-card">
+      <!-- Dynamically populated -->
+    </div>
+  </div>
+
+  <div class="q-footer">
+    <div class="q-footer-inner">
+      <button class="btn-back" id="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn-next" id="btn-next" onclick="goNext()" disabled>Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN: LOADING                            -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="screen-loading" class="screen">
+  <div class="spinner"></div>
+  <div class="loading-msg" id="loading-msg">Analysing your application approach...</div>
+  <div class="loading-sub">Your personalised diagnosis is on its way</div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN: RESULTS                            -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="screen-results" class="screen">
+
+  <!-- Hero score -->
+  <div class="results-hero">
+    <div class="results-label">Your Application Readiness Score</div>
+    <div class="score-display" id="overall-score">--</div>
+    <div class="score-denom">out of 100</div>
+  </div>
+
+  <!-- Scorecard -->
+  <div class="scorecard" id="scorecard">
+    <!-- Populated dynamically -->
+  </div>
+
+  <!-- Teasers -->
+  <div class="teasers" id="teasers">
+    <!-- Populated dynamically -->
+  </div>
+
+  <!-- Lock gate -->
+  <div class="lock-gate">
+    <div class="lock-box">
+      <div class="lock-icon">🔒</div>
+      <div class="lock-title">Your full diagnosis and action plan are ready.</div>
+      <div class="lock-sub">Enter your details below to unlock them.</div>
+    </div>
+  </div>
+
+  <!-- Email capture -->
+  <div class="email-form-section">
+    <div class="email-form-inner">
+      <div class="form-field">
+        <span class="form-icon">👤</span>
+        <input type="text" id="input-name" placeholder="Your first name" />
+      </div>
+      <div class="form-field">
+        <span class="form-icon">✉</span>
+        <input type="email" id="input-email" placeholder="Your email address" />
+      </div>
+      <div class="form-field">
+        <span class="form-icon">💬</span>
+        <select id="input-source">
+          <option value="" disabled selected>Where did you hear about Interview Gate?</option>
+          <option value="LinkedIn">LinkedIn</option>
+          <option value="Friend or colleague">From a friend or colleague</option>
+          <option value="Google search">Google search</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <button class="btn-unlock" id="btn-unlock" onclick="unlockResults()">
+        🔓 Unlock my full results
+      </button>
+    </div>
+  </div>
+
+  <!-- Full results (hidden until unlock) -->
+  <div class="full-results" id="full-results">
+
+    <div id="full-breakdown" class="results-section">
+      <div class="results-section-title">Your Breakdown</div>
+      <!-- Populated dynamically -->
+    </div>
+
+    <div id="overall-diagnosis-section" class="results-section">
+      <div class="results-section-title">Overall Diagnosis</div>
+      <div class="diagnosis-card" id="diagnosis-text">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+
+    <div id="action-plan-section" class="results-section">
+      <div class="results-section-title">Your Action Plan</div>
+      <div id="action-items">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Laphia CTA -->
+  <div class="laphia-cta" id="laphia-cta" style="display:none;">
+    <div class="laphia-cta-inner">
+      <h2 class="cta-heading">Ready to Take This <span>Further?</span></h2>
+      <p class="cta-text">
+        My name is Cynthia and I am building Laphia (from the Hausa word Lafiya, meaning peace, security, and being settled) — a coaching programme designed for professionals navigating the UK job market.
+      </p>
+      <p class="cta-text">
+        Whether you are going for your first UK corporate role, targeting visa-sponsored positions, breaking into the Civil Service, or ready for your next move and want to get there faster — Laphia is being built with you in mind.
+      </p>
+      <p class="cta-settled">You are already on the list. I will be in touch when Laphia launches with something worth your time.</p>
+    </div>
+  </div>
+
+  <!-- Feedback -->
+  <div class="feedback-section" id="feedback-section" style="display:none;">
+    <div class="feedback-inner">
+      <div id="feedback-form-wrap">
+        <h3 class="feedback-title">One last thing</h3>
+        <p class="feedback-sub">This tool is still being built and your experience matters. Did this diagnosis feel accurate? Was anything unclear or missing?</p>
+        <div class="stars" id="stars">
+          <button class="star" data-val="1" onclick="rateStar(1)">★</button>
+          <button class="star" data-val="2" onclick="rateStar(2)">★</button>
+          <button class="star" data-val="3" onclick="rateStar(3)">★</button>
+          <button class="star" data-val="4" onclick="rateStar(4)">★</button>
+          <button class="star" data-val="5" onclick="rateStar(5)">★</button>
+        </div>
+        <textarea class="feedback-textarea" id="feedback-text" placeholder="Tell us what we could do better (optional)"></textarea>
+        <button class="btn-feedback" onclick="submitFeedback()">Submit feedback</button>
+      </div>
+      <div class="thank-you" id="thank-you">
+        <div class="thank-icon">★</div>
+        <h3>Thank you</h3>
+        <p>Every response helps make Interview Gate more helpful for the next person.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-footer">
+    <button class="retry-link" onclick="restart()">Take the diagnostic again</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// SYSTEM PROMPT
+// ═══════════════════════════════════════════════
+const SYSTEM_PROMPT = `INTERVIEW GATE — FINAL DIAGNOSTIC SYSTEM PROMPT
+A Laphia Tool
+Version 1.3 Final
+
+OVERVIEW
+
+You are the diagnostic engine behind Interview Gate, a tool built by Laphia to help immigrants identify exactly what is blocking them from getting interviews in the UK job market.
+
+Your role is to:
+- Analyse the user's answers across four areas
+- Assign a status and individual score to each area
+- Calculate an overall Application Readiness Score
+- Write a personalised, honest diagnosis
+- Provide between 1 and 5 practical actions scaled to the user's need
+
+You are not a cheerleader. You are not a critic. You are the honest friend who has navigated this market and knows exactly what the real blockers look like.
+
+Every response must feel like it was written for this specific person. Never produce output that reads like a template. Use the full combination of their answers, including any optional background context, to write a diagnosis that reflects their actual situation.
+
+SCORING RULES
+
+There are four scored areas. Each area has a maximum score. Area scores combine to give the overall Application Readiness Score out of 100.
+
+AREA 1: EXECUTION — Maximum area score: 20
+Start at 20. Apply deductions:
+1-5 applications: -20 (score: 0)
+6-10 applications: -16 (score: 4)
+11-15 applications: -12 (score: 8)
+16-20 applications: -8 (score: 12)
+21-25 applications: -4 (score: 16)
+26 or above: no deduction (score: 20)
+
+AREA 2: CV AND TARGETING — Maximum area score: 25
+Start at 25. Apply deductions:
+Never tailors CV: -25 (score: 0)
+Sometimes tailors CV: -12 (score: 13)
+Always tailors CV: no deduction (score: 25)
+
+AREA 3: STRATEGY AND FOCUS — Maximum area score: 30
+Start at 30. Apply the following deductions. Deductions are cumulative up to maximum of 30.
+Role-experience match (Q6): Broadly - various levels and types: -12. Fairly closely - meets some criteria: -5. Very closely - meets most criteria: no deduction.
+Sector and application focus (Q7): Broad across different roles and sectors: -8. Somewhat focused across related areas: -3. Focused within one clear field: no deduction.
+Application method (Q5): Job boards only: -5. Company websites directly: -2. Mix of both: no deduction. Civil Service Jobs specifically: no deduction.
+CV validation (Q8): CV not reviewed: -5. Not sure if CV has been reviewed: -3. CV reviewed: no deduction.
+IMPORTANT: Only apply deductions where the answer genuinely indicates a gap. A user who answers positively across all four variables in this area receives 30/30 with no deductions. Do not manufacture deductions for strong performers.
+
+AREA 4: CONFIDENCE AND CLARITY — Maximum area score: 25
+Start at 25. Apply deductions:
+Confidence score 1: -25 (score: 0)
+Confidence score 2: -20 (score: 5)
+Confidence score 3: -13 (score: 12)
+Confidence score 4: -6 (score: 19)
+Confidence score 5: no deduction (score: 25)
+IMPORTANT: A confidence score of 5 means zero deduction. Score is 25/25. Do not apply any deduction here under any circumstances.
+
+VISA SPONSORSHIP TARGETING (no score deduction): If user needs sponsorship but does not always research eligibility, flag this in the diagnosis as a precision and targeting risk. Include in the action plan where applicable. Do not deduct points for this.
+
+CONTEXT FACTORS - NOT SCORED
+UK work experience: context only. Not a barrier or a requirement. Frame as a translation challenge where relevant. What matters is presenting relevant experience in language UK hiring managers recognise. Never treat lack of UK experience as disqualifying.
+Recruiter outreach: context only. Not scored. Civil Service blind recruitment makes this irrelevant in many cases. Acknowledge this where it applies.
+
+OVERALL APPLICATION READINESS SCORE: Sum of all four area scores out of 100.
+Minimum overall score: 10. Maximum overall score: 100.
+
+OUTPUT FORMAT - CRITICAL: You must output ONLY a valid JSON object. No markdown, no explanation before or after. Just the raw JSON.
+
+{
+  "overallScore": <number>,
+  "areas": {
+    "execution": { "score": <number>, "max": 20, "status": "<Strong|Needs Attention|Key Gap>", "teaser": "<one sentence hint>", "breakdown": "<1-2 sentences personalised diagnosis>" },
+    "cvTargeting": { "score": <number>, "max": 25, "status": "<Strong|Needs Attention|Key Gap>", "teaser": "<one sentence hint>", "breakdown": "<1-2 sentences personalised diagnosis>" },
+    "strategyFocus": { "score": <number>, "max": 30, "status": "<Strong|Needs Attention|Key Gap>", "teaser": "<one sentence hint>", "breakdown": "<1-2 sentences personalised diagnosis>" },
+    "confidenceClarity": { "score": <number>, "max": 25, "status": "<Strong|Needs Attention|Key Gap>", "teaser": "<one sentence hint>", "breakdown": "<1-2 sentences personalised diagnosis>" }
+  },
+  "overallDiagnosis": "<2-3 sentences drawing the full picture together>",
+  "actionPlan": [
+    { "title": "<action title>", "detail": "<one specific sentence>" },
+    { "title": "<action title>", "detail": "<one specific sentence>" }
+  ]
+}
+
+TONE RULES - NON-NEGOTIABLE:
+- Conversational, warm, and direct
+- Honest without being harsh
+- Speak as someone who has personally navigated this market
+- No em dashes anywhere in the output
+- No "it is not X, it is Y" constructions
+- No "you rate yourself" or standoffish phrasings
+- Short paragraphs. No walls of text.
+- British English spelling throughout
+- Every output must feel written for this specific person
+- Never blame the user
+- Never minimise the real difficulty of the UK job market for immigrants
+- Always leave the user feeling clearer and more capable than when they started
+- Do not use: journey, passion, leverage, synergy, unlock, empower, game-changer, transformative, holistic`;
+
+// ═══════════════════════════════════════════════
+// QUESTIONS CONFIG
+// ═══════════════════════════════════════════════
+const QUESTIONS = [
+  {
+    id: 'q1',
+    text: 'Are you currently getting interviews?',
+    type: 'options',
+    options: ['Yes', 'A few', 'No']
+  },
+  {
+    id: 'q2',
+    text: 'Do you have UK-based work experience?',
+    hint: 'Any formal employment in the UK counts.',
+    type: 'options',
+    options: ['Yes', 'No']
+  },
+  {
+    id: 'q3',
+    text: 'Are you tailoring your CV for each role you apply to?',
+    type: 'options',
+    options: ['Always', 'Sometimes', 'Never']
+  },
+  {
+    id: 'q4',
+    text: 'How many jobs have you applied to in the last 30 days?',
+    type: 'options',
+    options: ['1-5', '6-10', '11-15', '16-20', '21-25', '26-30', '30+']
+  },
+  {
+    id: 'q5',
+    text: 'Where do you mainly apply for roles?',
+    type: 'options',
+    options: [
+      'Job boards only (Indeed, Reed, etc.)',
+      'Company websites directly',
+      'Mix of both',
+      'Civil Service Jobs specifically'
+    ]
+  },
+  {
+    id: 'q6',
+    text: 'How closely do the roles you apply for match your actual experience and skill level?',
+    type: 'options',
+    options: [
+      'Very closely — I only apply when I meet most of the criteria',
+      'Fairly closely — I apply when I meet some of it',
+      'Broadly — I apply to roles at various levels and types to see what lands'
+    ]
+  },
+  {
+    id: 'q7',
+    text: 'Are you applying within a clear focus area or across different roles?',
+    type: 'options',
+    options: [
+      'Focused — I apply within one clear field or role type',
+      'Somewhat focused — a few related areas',
+      'Broad — I apply across different roles and sectors'
+    ]
+  },
+  {
+    id: 'q8',
+    text: 'Has anyone with UK hiring, recruitment, or career coaching experience reviewed your CV?',
+    type: 'options',
+    options: ['Yes', 'No', 'Not sure']
+  },
+  {
+    id: 'q9',
+    text: 'How confident are you in your ability to frame your experience and skills to show clear value and measurable outcomes in your applications?',
+    type: 'confidence',
+    labels: ['Very difficult', 'Strong at this']
+  },
+  {
+    id: 'q10',
+    text: 'Do you need visa sponsorship to work in the UK?',
+    type: 'options',
+    options: ['Yes', 'No', 'Not sure']
+  },
+  {
+    id: 'q11',
+    text: 'Do you know which roles and employers are eligible to offer visa sponsorship?',
+    hint: 'This helps us give you more targeted advice.',
+    type: 'options',
+    options: [
+      'Yes, I always research this before applying',
+      'Sometimes',
+      'No, I apply and hope for the best'
+    ],
+    conditional: (answers) => answers.q10 === 'Yes' || answers.q10 === 'Not sure'
+  },
+  {
+    id: 'optional',
+    text: 'Tell us a little about your background',
+    hint: "Tell us about your professional experience and the types of roles you've been applying for. Don't include personal details. (2-3 sentences is plenty.)",
+    type: 'textarea',
+    optional: true
+  }
+];
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let answers = {};
+let currentStep = 0;
+let visibleQuestions = [];
+let apiResult = null;
+let starRating = 0;
+
+// ═══════════════════════════════════════════════
+// SCREEN MANAGEMENT
+// ═══════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function startDiagnostic() {
+  answers = {};
+  currentStep = 0;
+  buildVisibleQuestions();
+  renderQuestion();
+  showScreen('questions');
+}
+
+function restart() {
+  answers = {};
+  currentStep = 0;
+  apiResult = null;
+  starRating = 0;
+  document.getElementById('full-results').classList.remove('revealed');
+  document.getElementById('laphia-cta').style.display = 'none';
+  document.getElementById('feedback-section').style.display = 'none';
+  document.getElementById('feedback-form-wrap').style.display = 'block';
+  document.getElementById('thank-you').classList.remove('show');
+  document.getElementById('input-name').value = '';
+  document.getElementById('input-email').value = '';
+  document.getElementById('input-source').value = '';
+  showScreen('landing');
+}
+
+// ═══════════════════════════════════════════════
+// QUESTION LOGIC
+// ═══════════════════════════════════════════════
+function buildVisibleQuestions() {
+  visibleQuestions = QUESTIONS.filter(q => {
+    if (q.conditional) return q.conditional(answers);
+    return true;
+  });
+}
+
+function renderQuestion() {
+  buildVisibleQuestions();
+  const q = visibleQuestions[currentStep];
+  if (!q) return;
+
+  const total = visibleQuestions.length;
+  document.getElementById('q-counter').textContent = `${currentStep + 1} of ${total}`;
+  document.getElementById('progress-fill').style.width = `${((currentStep + 1) / total) * 100}%`;
+  document.getElementById('btn-back').style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+
+  const isOptional = q.optional;
+  const hasAnswer = answers[q.id] !== undefined && answers[q.id] !== '';
+
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = currentStep === total - 1 ? 'Get my results →' : 'Next →';
+  nextBtn.disabled = !isOptional && !hasAnswer;
+
+  let html = `
+    <div class="q-step-label">Question ${currentStep + 1}</div>
+    <div class="q-text">${q.text}</div>
+    ${q.hint ? `<div class="q-hint">${q.hint}</div>` : ''}
+  `;
+
+  if (q.type === 'options') {
+    const letters = 'ABCDEFGHIJ';
+    html += `<div class="options">`;
+    q.options.forEach((opt, i) => {
+      const sel = answers[q.id] === opt ? 'selected' : '';
+      html += `
+        <button class="option-btn ${sel}" onclick="selectOption('${q.id}', ${JSON.stringify(opt)})">
+          <span class="option-letter">${letters[i]}</span>
+          ${opt}
+        </button>`;
+    });
+    html += `</div>`;
+  } else if (q.type === 'confidence') {
+    html += `
+      <div class="confidence-grid">`;
+    for (let i = 1; i <= 5; i++) {
+      const sel = answers[q.id] === i ? 'selected' : '';
+      html += `<button class="conf-btn ${sel}" onclick="selectConf('${q.id}', ${i})">${i}</button>`;
+    }
+    html += `</div>
+      <div class="conf-labels">
+        <span>${q.labels[0]}</span>
+        <span>${q.labels[1]}</span>
+      </div>`;
+  } else if (q.type === 'textarea') {
+    const val = answers[q.id] || '';
+    html += `
+      <textarea class="optional-textarea" id="ta-${q.id}" placeholder="Optional — share as much or as little as you like..." oninput="answers['${q.id}'] = this.value">${val}</textarea>`;
+  }
+
+  document.getElementById('q-card').innerHTML = html;
+  nextBtn.disabled = !isOptional && !hasAnswer;
+}
+
+function selectOption(qId, val) {
+  answers[qId] = val;
+  renderQuestion();
+}
+
+function selectConf(qId, val) {
+  answers[qId] = val;
+  renderQuestion();
+}
+
+function goNext() {
+  const q = visibleQuestions[currentStep];
+  if (q.type === 'textarea') {
+    const ta = document.getElementById(`ta-${q.id}`);
+    if (ta) answers[q.id] = ta.value;
+  }
+
+  buildVisibleQuestions();
+  if (currentStep < visibleQuestions.length - 1) {
+    currentStep++;
+    renderQuestion();
+  } else {
+    submitDiagnostic();
+  }
+}
+
+function goBack() {
+  if (currentStep > 0) {
+    currentStep--;
+    renderQuestion();
+  }
+}
+
+// ═══════════════════════════════════════════════
+// LOADING MESSAGES
+// ═══════════════════════════════════════════════
+const LOADING_MSGS = [
+  'Analysing your application approach...',
+  'Reviewing your targeting strategy...',
+  'Preparing your personalised diagnosis...',
+  'Almost ready...'
+];
+
+let loadingInterval;
+
+function startLoadingMessages() {
+  let i = 0;
+  const el = document.getElementById('loading-msg');
+  el.textContent = LOADING_MSGS[0];
+  loadingInterval = setInterval(() => {
+    i = (i + 1) % LOADING_MSGS.length;
+    el.style.opacity = 0;
+    setTimeout(() => {
+      el.textContent = LOADING_MSGS[i];
+      el.style.opacity = 1;
+    }, 300);
+  }, 4000);
+}
+
+function stopLoadingMessages() {
+  clearInterval(loadingInterval);
+}
+
+// ═══════════════════════════════════════════════
+// API CALL
+// ═══════════════════════════════════════════════
+async function submitDiagnostic() {
+  showScreen('loading');
+  startLoadingMessages();
+
+  const userMessage = buildUserMessage();
+
+  try {
+    const response = await fetch('/api/diagnose', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userMessage })
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error || 'API error');
+    }
+
+    apiResult = await response.json();
+    stopLoadingMessages();
+    renderResults();
+    showScreen('results');
+
+  } catch (err) {
+    stopLoadingMessages();
+    console.error('API Error:', err);
+    alert('Something went wrong generating your results. Please try again.\n\nError: ' + err.message);
+    showScreen('questions');
+  }
+}
+
+function buildUserMessage() {
+  const a = answers;
+  return `Here are my answers:
+
+Q1 - Getting interviews: ${a.q1 || 'Not answered'}
+Q2 - UK work experience: ${a.q2 || 'Not answered'}
+Q3 - CV tailoring: ${a.q3 || 'Not answered'}
+Q4 - Applications in last 30 days: ${a.q4 || 'Not answered'}
+Q5 - Where I apply: ${a.q5 || 'Not answered'}
+Q6 - Role match: ${a.q6 || 'Not answered'}
+Q7 - Application focus: ${a.q7 || 'Not answered'}
+Q8 - CV reviewed: ${a.q8 || 'Not answered'}
+Q9 - Confidence score: ${a.q9 || 'Not answered'}
+Q10 - Visa sponsorship needed: ${a.q10 || 'Not answered'}
+Q11 - Sponsorship eligibility research: ${a.q11 || 'Not applicable'}
+
+Optional background context: ${a.optional || 'None provided'}
+
+Please provide my full Interview Gate diagnostic as a JSON object exactly as specified in the output format.`;
+}
+
+// ═══════════════════════════════════════════════
+// RENDER RESULTS
+// ═══════════════════════════════════════════════
+function renderResults() {
+  const r = apiResult;
+  if (!r) return;
+
+  // Overall score
+  document.getElementById('overall-score').textContent = r.overallScore;
+
+  // Scorecard
+  const areas = [
+    { key: 'execution', label: 'Execution', max: 20 },
+    { key: 'cvTargeting', label: 'CV and Targeting', max: 25 },
+    { key: 'strategyFocus', label: 'Strategy and Focus', max: 30 },
+    { key: 'confidenceClarity', label: 'Confidence and Clarity', max: 25 }
+  ];
+
+  let scorecardHtml = '';
+  let teaserHtml = '';
+  let breakdownHtml = '';
+
+  areas.forEach(area => {
+    const data = r.areas[area.key];
+    if (!data) return;
+
+    const pct = Math.round((data.score / area.max) * 100);
+    const statusClass = data.status === 'Strong' ? 'strong' : data.status === 'Needs Attention' ? 'attention' : 'gap';
+
+    scorecardHtml += `
+      <div class="area-row">
+        <span class="area-name">${area.label}</span>
+        <div class="bar-track"><div class="bar-fill bar-${statusClass}" style="width:${pct}%"></div></div>
+        <span class="area-score-num">${data.score}/${area.max}</span>
+        <span class="status-badge status-${statusClass}">${data.status}</span>
+      </div>`;
+
+    teaserHtml += `
+      <div class="teaser-card">
+        <div class="teaser-area">${area.label}</div>
+        <div class="teaser-text">${data.teaser}</div>
+      </div>`;
+
+    breakdownHtml += `
+      <div class="breakdown-card">
+        <div class="breakdown-header">
+          <span class="breakdown-area">${area.label}</span>
+          <span class="status-badge status-${statusClass}">${data.status}</span>
+        </div>
+        <div class="breakdown-text">${data.breakdown}</div>
+      </div>`;
+  });
+
+  document.getElementById('scorecard').innerHTML = scorecardHtml;
+  document.getElementById('teasers').innerHTML = teaserHtml;
+  document.getElementById('full-breakdown').innerHTML = `
+    <div class="results-section-title">Your Breakdown</div>
+    ${breakdownHtml}`;
+
+  // Diagnosis
+  document.getElementById('diagnosis-text').innerHTML = `<p>${r.overallDiagnosis}</p>`;
+
+  // Actions
+  let actionsHtml = '';
+  (r.actionPlan || []).forEach((action, i) => {
+    actionsHtml += `
+      <div class="action-card">
+        <div class="action-num">${i + 1}</div>
+        <div class="action-content">
+          <div class="action-title">${action.title}</div>
+          <div class="action-text">${action.detail}</div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('action-items').innerHTML = actionsHtml;
+}
+
+// ═══════════════════════════════════════════════
+// UNLOCK RESULTS
+// ═══════════════════════════════════════════════
+function unlockResults() {
+  const name = document.getElementById('input-name').value.trim();
+  const email = document.getElementById('input-email').value.trim();
+  const source = document.getElementById('input-source').value;
+
+  if (!name || !email || !source) {
+    alert('Please fill in all three fields to unlock your full results.');
+    return;
+  }
+
+  if (!email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  // Store lead data
+  const leadData = {
+    name, email, source,
+    overallScore: apiResult?.overallScore,
+    answers,
+    timestamp: new Date().toISOString()
+  };
+
+  console.log('Lead captured:', leadData);
+
+  // Reveal full results
+  const fullResults = document.getElementById('full-results');
+  fullResults.classList.add('revealed');
+  document.getElementById('laphia-cta').style.display = 'block';
+  document.getElementById('feedback-section').style.display = 'block';
+
+  // Scroll to full results
+  setTimeout(() => {
+    fullResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+// ═══════════════════════════════════════════════
+// FEEDBACK
+// ═══════════════════════════════════════════════
+function rateStar(val) {
+  starRating = val;
+  document.querySelectorAll('.star').forEach((s, i) => {
+    s.classList.toggle('active', i < val);
+  });
+}
+
+function submitFeedback() {
+  const text = document.getElementById('feedback-text').value;
+  console.log('Feedback:', { rating: starRating, text });
+  document.getElementById('feedback-form-wrap').style.display = 'none';
+  document.getElementById('thank-you').classList.add('show');
+}
+</script>
+
+<!-- API KEY CONFIG -->
+<!-- 
+  IMPORTANT: Before deploying, set your API key.
+  Option 1 (Netlify): Add ANTHROPIC_API_KEY as an environment variable
+                      and use a serverless function (see README).
+  Option 2 (Testing): Temporarily set it below - NEVER commit this to GitHub.
+-->
+<script>
+  // For local testing only - remove before pushing to GitHub
+  // window.ANTHROPIC_API_KEY = 'your-key-here';
+</script>
+
+</body>
+</html>
