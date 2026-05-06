@@ -1570,7 +1570,7 @@ function renderQuestion() {
     q.options.forEach((opt, i) => {
       const sel = answers[q.id] === opt ? 'selected' : '';
       html += `
-        <button class="option-btn ${sel}" onclick="selectOption('${q.id}', ${JSON.stringify(opt)})">
+        <button class="option-btn ${sel}" data-qid="${q.id}" data-val="${i}">
           <span class="option-letter">${letters[i]}</span>
           ${opt}
         </button>`;
@@ -1581,7 +1581,7 @@ function renderQuestion() {
       <div class="confidence-grid">`;
     for (let i = 1; i <= 5; i++) {
       const sel = answers[q.id] === i ? 'selected' : '';
-      html += `<button class="conf-btn ${sel}" onclick="selectConf('${q.id}', ${i})">${i}</button>`;
+      html += `<button class="conf-btn ${sel}" data-qid="${q.id}" data-conf="${i}">${i}</button>`;
     }
     html += `</div>
       <div class="conf-labels">
@@ -1607,6 +1607,30 @@ function selectConf(qId, val) {
   answers[qId] = val;
   renderQuestion();
 }
+
+// Event delegation for option and confidence buttons
+document.addEventListener('click', function(e) {
+  const optBtn = e.target.closest('.option-btn');
+  if (optBtn) {
+    const qId = optBtn.getAttribute('data-qid');
+    const valIndex = parseInt(optBtn.getAttribute('data-val'));
+    const q = visibleQuestions[currentStep];
+    if (q && q.id === qId) {
+      answers[qId] = q.options[valIndex];
+      renderQuestion();
+    }
+    return;
+  }
+
+  const confBtn = e.target.closest('.conf-btn');
+  if (confBtn) {
+    const qId = confBtn.getAttribute('data-qid');
+    const val = parseInt(confBtn.getAttribute('data-conf'));
+    answers[qId] = val;
+    renderQuestion();
+    return;
+  }
+});
 
 function goNext() {
   const q = visibleQuestions[currentStep];
