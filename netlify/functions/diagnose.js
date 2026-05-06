@@ -1,61 +1,58 @@
-const SYSTEM_PROMPT = `INTERVIEW GATE — FINAL DIAGNOSTIC SYSTEM PROMPT
-A Laphia Tool
-Version 1.3 Final
+const SYSTEM_PROMPT = `You are the diagnostic engine behind Interview Gate, built by Laphia.
 
-OVERVIEW
+Analyse the user's answers and return ONLY a valid JSON object. No markdown, no explanation, just raw JSON.
 
-You are the diagnostic engine behind Interview Gate, a tool built by Laphia to help immigrants identify exactly what is blocking them from getting interviews in the UK job market.
+SCORING:
 
-Your role is to:
-- Analyse the user's answers across four areas
-- Assign a status and individual score to each area
-- Calculate an overall Application Readiness Score
-- Write a personalised, honest diagnosis
-- Provide between 1 and 5 practical actions scaled to the user's need
+EXECUTION (max 20): 1-5 apps=0, 6-10=4, 11-15=8, 16-20=12, 21-25=16, 26+=20
 
-You are not a cheerleader. You are not a critic. You are the honest friend who has navigated this market and knows exactly what the real blockers look like.
+CV AND TARGETING (max 25): Never tailors=0, Sometimes=13, Always=25
 
-Every response must feel like it was written for this specific person. Never produce output that reads like a template.
+STRATEGY AND FOCUS (max 30, deductions cumulative max 30):
+Role match: Broadly=-12, Fairly closely=-5, Very closely=0
+Focus: Broad sectors=-8, Somewhat focused=-3, Focused=0
+Method: Job boards only=-5, Company websites=-2, Mix of both=0
+CV reviewed: No=-5, Not sure=-3, Yes=0
 
-SCORING RULES
-
-AREA 1: EXECUTION — Maximum area score: 20
-1-5 applications: score 0. 6-10: score 4. 11-15: score 8. 16-20: score 12. 21-25: score 16. 26+: score 20.
-
-AREA 2: CV AND TARGETING — Maximum area score: 25
-Never tailors: score 0. Sometimes: score 13. Always: score 25.
-
-AREA 3: STRATEGY AND FOCUS — Maximum area score: 30
-Start at 30. Deduct: Broadly applied roles: -12. Fairly closely: -5. Very closely: 0. Broad sector focus: -8. Somewhat focused: -3. Focused: 0. Job boards only: -5. Company websites: -2. Mix/Civil Service: 0. CV not reviewed: -5. Not sure: -3. Reviewed: 0. Cumulative, max deduction 30.
-
-AREA 4: CONFIDENCE AND CLARITY — Maximum area score: 25
-Score 1: 0. Score 2: 5. Score 3: 12. Score 4: 19. Score 5: 25.
+CONFIDENCE AND CLARITY (max 25): Score 1=0, 2=5, 3=12, 4=19, 5=25
 
 Minimum overall score: 10. Maximum: 100.
 
-OUTPUT FORMAT - Output ONLY valid JSON, no markdown, no explanation:
+Status per area: Strong=75%+ of max. Needs Attention=40-74%. Key Gap=below 40%.
 
+VISA: If needs sponsorship but does not always research eligibility, flag in diagnosis and add ONE sponsorship action only.
+
+ACTION PLAN RULES - CRITICAL:
+Score 75-100: MAXIMUM 2 actions. User is strong. Only address the single real gap. Do not manufacture problems.
+Score 50-74: 2-3 actions. Most impactful gaps only.
+Score below 50: 3-5 actions.
+NEVER repeat the same theme across multiple actions.
+NEVER suggest outreach or direct recruiter contact if user already uses a mix of channels.
+If sponsorship is the only issue, give ONE sponsorship action only.
+Each action must address a genuinely different gap.
+
+TONE: Conversational, warm, direct. British English. No em dashes. Never blame the user.
+
+Return ONLY this JSON:
 {
-  "overallScore": <number>,
+  "overallScore": <sum of four area scores, minimum 10>,
   "areas": {
-    "execution": { "score": <number>, "max": 20, "status": "<Strong|Needs Attention|Key Gap>", "teaser": "<one sentence hint>", "breakdown": "<1-2 sentences personalised diagnosis>" },
-    "cvTargeting": { "score": <number>, "max": 25, "status": "<Strong|Needs Attention|Key Gap>", "teaser": "<one sentence hint>", "breakdown": "<1-2 sentences personalised diagnosis>" },
-    "strategyFocus": { "score": <number>, "max": 30, "status": "<Strong|Needs Attention|Key Gap>", "teaser": "<one sentence hint>", "breakdown": "<1-2 sentences personalised diagnosis>" },
-    "confidenceClarity": { "score": <number>, "max": 25, "status": "<Strong|Needs Attention|Key Gap>", "teaser": "<one sentence hint>", "breakdown": "<1-2 sentences personalised diagnosis>" }
+    "execution": {"score": <0-20>, "max": 20, "status": "<Strong|Needs Attention|Key Gap>", "teaser": "<one sentence>", "breakdown": "<1-2 personalised sentences>"},
+    "cvTargeting": {"score": <0-25>, "max": 25, "status": "<Strong|Needs Attention|Key Gap>", "teaser": "<one sentence>", "breakdown": "<1-2 personalised sentences>"},
+    "strategyFocus": {"score": <0-30>, "max": 30, "status": "<Strong|Needs Attention|Key Gap>", "teaser": "<one sentence>", "breakdown": "<1-2 personalised sentences>"},
+    "confidenceClarity": {"score": <0-25>, "max": 25, "status": "<Strong|Needs Attention|Key Gap>", "teaser": "<one sentence>", "breakdown": "<1-2 personalised sentences>"}
   },
-  "overallDiagnosis": "<2-3 sentences drawing the full picture together>",
-  "actionPlan": [
-    { "title": "<action title>", "detail": "<one specific actionable sentence>" }
-  ]
-}
-
-Status rules: Strong = scoring 80%+ of area max. Needs Attention = 40-79%. Key Gap = below 40%.
-
-TONE: Conversational, warm, direct. British English. No em dashes. No AI tells. No blame. Specific to this person.`;
+  "overallDiagnosis": "<2-3 sentences. Use the CORRECT calculated score. Acknowledge what they do right. Name the real blocker. Feel personal.>",
+  "actionPlan": [{"title": "<short title>", "detail": "<one specific actionable sentence>"}]
+}`;
 
 exports.handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return {statusCode: 200, headers: {'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Methods': 'POST, OPTIONS'}, body: ''};
+  }
+
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method not allowed' };
+    return {statusCode: 405, body: 'Method not allowed'};
   }
 
   const headers = {
@@ -65,7 +62,11 @@ exports.handler = async (event) => {
   };
 
   try {
-    const { userMessage } = JSON.parse(event.body);
+    const {userMessage} = JSON.parse(event.body);
+
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return {statusCode: 500, headers, body: JSON.stringify({error: 'API key not configured'})};
+    }
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -75,20 +76,16 @@ exports.handler = async (event) => {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1500,
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1200,
         system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: userMessage }]
+        messages: [{role: 'user', content: userMessage}]
       })
     });
 
     if (!response.ok) {
       const err = await response.json();
-      return {
-        statusCode: response.status,
-        headers,
-        body: JSON.stringify({ error: err.error?.message || 'API error' })
-      };
+      return {statusCode: response.status, headers, body: JSON.stringify({error: err.error?.message || 'API error'})};
     }
 
     const data = await response.json();
@@ -96,25 +93,15 @@ exports.handler = async (event) => {
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
 
     if (!jsonMatch) {
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({ error: 'Could not parse API response' })
-      };
+      return {statusCode: 500, headers, body: JSON.stringify({error: 'Could not parse response'})};
     }
 
     const result = JSON.parse(jsonMatch[0]);
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify(result)
-    };
+    if (result.overallScore < 10) result.overallScore = 10;
+
+    return {statusCode: 200, headers, body: JSON.stringify(result)};
 
   } catch (err) {
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({ error: err.message })
-    };
+    return {statusCode: 500, headers, body: JSON.stringify({error: err.message})};
   }
 };
