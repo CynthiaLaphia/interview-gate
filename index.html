@@ -1798,16 +1798,29 @@ async function submitDiagnostic() {
   }
 }
 
+function calculateScoreFromAnswers(a) {
+  const execMap = {'1-5':0,'6-10':4,'11-15':8,'16-20':12,'21-25':16,'26-30':20,'30+':20};
+  const exec = execMap[a.q4] || 0;
+  const cvMap = {'Always':25,'Sometimes':13,'Never':0};
+  const cv = cvMap[a.q3] || 0;
+  let strat = 30;
+  if (a.q6 && a.q6.startsWith('Broadly')) strat -= 12;
+  else if (a.q6 && a.q6.startsWith('Fairly')) strat -= 5;
+  if (a.q7 && a.q7.startsWith('Broad')) strat -= 8;
+  else if (a.q7 && a.q7.startsWith('Somewhat')) strat -= 3;
+  if (a.q5 && a.q5.startsWith('Job boards')) strat -= 5;
+  else if (a.q5 && a.q5.startsWith('Company')) strat -= 2;
+  if (a.q8 === 'No') strat -= 5;
+  else if (a.q8 === 'Not sure') strat -= 3;
+  strat = Math.max(0, strat);
+  const confMap = {1:0,2:5,3:12,4:19,5:25};
+  const conf = confMap[a.q9] || 0;
+  return Math.max(10, Math.min(100, exec + cv + strat + conf));
+}
+
 function buildUserMessage() {
   const a = answers;
-  // Calculate display score to pass to API
-  const calcScore = apiResult ? 
-    Math.max(10, Math.min(100, 
-      (apiResult.areas?.execution?.score || 0) +
-      (apiResult.areas?.cvTargeting?.score || 0) +
-      (apiResult.areas?.strategyFocus?.score || 0) +
-      (apiResult.areas?.confidenceClarity?.score || 0)
-    )) : null;
+  const calculatedScore = calculateScoreFromAnswers(a);
   return `Here are my answers:
 
 Q1 - Getting interviews: ${a.q1 || 'Not answered'}
@@ -1824,157 +1837,13 @@ Q11 - Sponsorship eligibility research: ${a.q11 || 'Not applicable'}
 
 Optional background context: ${a.optional || 'None provided'}
 
-Please provide my full Interview Gate diagnostic as a JSON object exactly as specified in the output format.`;
-}
+IMPORTANT: The correct overall score for this user is ${calculatedScore}/100. You must use this exact number in your diagnosis text and in the overallScore field of your JSON response.
 
-// ═══════════════════════════════════════════════
-// RENDER RESULTS
-// ═══════════════════════════════════════════════
-function renderResults() {
-  const r = apiResult;
-  if (!r) return;
+Please provide my full Interview Gate diagnostic as a JSON object exactly as specified in the output format.`;}
 
-  // Overall score - calculate from area scores to ensure accuracy
-  const areaSum = (r.areas.execution?.score || 0) + 
-                  (r.areas.cvTargeting?.score || 0) + 
-                  (r.areas.strategyFocus?.score || 0) + 
-                  (r.areas.confidenceClarity?.score || 0);
-  const displayScore = areaSum > 0 ? areaSum : (r.overallScore || 0);
-  const finalScore = Math.max(10, Math.min(100, displayScore));
-  document.getElementById('overall-score').textContent = finalScore;
-
-  // Scorecard
-  const areas = [
-    { key: 'execution', label: 'Execution', max: 20 },
-    { key: 'cvTargeting', label: 'CV and Targeting', max: 25 },
-    { key: 'strategyFocus', label: 'Strategy and Focus', max: 30 },
-    { key: 'confidenceClarity', label: 'Confidence and Clarity', max: 25 }
-  ];
-
-  let scorecardHtml = '';
-  let teaserHtml = '';
-  let breakdownHtml = '';
-
-  areas.forEach(area => {
-    const data = r.areas[area.key];
-    if (!data) return;
-
-    const pct = Math.round((data.score / area.max) * 100);
-    const statusClass = data.status === 'Strong' ? 'strong' : data.status === 'Needs Attention' ? 'attention' : 'gap';
-
-    scorecardHtml += `
-      <div class="area-row">
-        <span class="area-name">${area.label}</span>
-        <div class="bar-track"><div class="bar-fill bar-${statusClass}" style="width:${pct}%"></div></div>
-        <span class="area-score-num">${data.score}/${area.max}</span>
-        <span class="status-badge status-${statusClass}">${data.status}</span>
-      </div>`;
-
-    teaserHtml += `
-      <div class="teaser-card">
-        <div class="teaser-area">${area.label}</div>
-        <div class="teaser-text">${data.teaser}</div>
-      </div>`;
-
-    breakdownHtml += `
-      <div class="breakdown-card">
-        <div class="breakdown-header">
-          <span class="breakdown-area">${area.label}</span>
-          <span class="status-badge status-${statusClass}">${data.status}</span>
-        </div>
-        <div class="breakdown-text">${data.breakdown}</div>
-      </div>`;
-  });
-
-  document.getElementById('scorecard').innerHTML = scorecardHtml;
-  document.getElementById('teasers').innerHTML = teaserHtml;
-  document.getElementById('full-breakdown').innerHTML = `
-    <div class="results-section-title">Your Breakdown</div>
-    ${breakdownHtml}`;
-
-  // Diagnosis
-  document.getElementById('diagnosis-text').innerHTML = `<p>${r.overallDiagnosis}</p>`;
-
-  // Actions
-  let actionsHtml = '';
-  (r.actionPlan || []).forEach((action, i) => {
-    actionsHtml += `
-      <div class="action-card">
-        <div class="action-num">${i + 1}</div>
-        <div class="action-content">
-          <div class="action-title">${action.title}</div>
-          <div class="action-text">${action.detail}</div>
-        </div>
-      </div>`;
-  });
-  document.getElementById('action-items').innerHTML = actionsHtml;
-}
-
-// ═══════════════════════════════════════════════
-// UNLOCK RESULTS
-// ═══════════════════════════════════════════════
-function unlockResults() {
-  const name = document.getElementById('input-name').value.trim();
-  const email = document.getElementById('input-email').value.trim();
-  const source = document.getElementById('input-source').value;
-
-  if (!name || !email || !source) {
-    alert('Please fill in all three fields to unlock your full results.');
-    return;
-  }
-
-  if (!email.includes('@')) {
-    alert('Please enter a valid email address.');
-    return;
-  }
-
-  // Store lead data
-  const leadData = {
-    name, email, source,
-    overallScore: apiResult?.overallScore,
-    answers,
-    timestamp: new Date().toISOString()
-  };
-
-  console.log('Lead captured:', leadData);
-
-  // Reveal full results
-  const fullResults = document.getElementById('full-results');
-  fullResults.classList.add('revealed');
-  document.getElementById('laphia-cta').style.display = 'block';
-  document.getElementById('feedback-section').style.display = 'block';
-
-  // Scroll to full results
-  setTimeout(() => {
-    fullResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
-}
-
-// ═══════════════════════════════════════════════
-// FEEDBACK
-// ═══════════════════════════════════════════════
-function rateStar(val) {
-  starRating = val;
-  document.querySelectorAll('.star').forEach((s, i) => {
-    s.classList.toggle('active', i < val);
-  });
-}
-
-function submitFeedback() {
-  const text = document.getElementById('feedback-text').value;
-  console.log('Feedback:', { rating: starRating, text });
-  document.getElementById('feedback-form-wrap').style.display = 'none';
-  document.getElementById('thank-you').classList.add('show');
-}
 </script>
 
 <!-- API KEY CONFIG -->
-<!-- 
-  IMPORTANT: Before deploying, set your API key.
-  Option 1 (Netlify): Add ANTHROPIC_API_KEY as an environment variable
-                      and use a serverless function (see README).
-  Option 2 (Testing): Temporarily set it below - NEVER commit this to GitHub.
--->
 <script>
   // For local testing only - remove before pushing to GitHub
   // window.ANTHROPIC_API_KEY = 'your-key-here';
